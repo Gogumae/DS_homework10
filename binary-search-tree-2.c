@@ -245,7 +245,101 @@ int insert(Node* head, int key)
 
 int deleteNode(Node* head, int key)
 {
+	if(head == NULL || head->left == NULL) {
+		printf("nothing to delete");
+		return 0;
+	}
 
+	Node* root = head->left;
+	Node* parent = NULL;
+	Node* now = root;
+
+	while((now != NULL) && (now->key) != key) {  //삭제할 key값을 가진 노드를 찾는 반복문
+		if(now->key != key) {
+			parent = now;
+
+			if(now->key > key) {
+				now = now->left;
+			}
+			else {
+				now = now->right;
+			}
+		}
+	}
+
+	if(now == NULL) {
+		printf("No node for key");
+		return 0;
+	}
+
+	/* 삭제할 노드가 리프 노드일 경우 */
+	if(now->left == NULL && now->right == NULL) {
+		if(parent != NULL) {  //부모 노드에서 child로의 연결 해제
+			if(parent->left = now) {
+				parent->left = NULL;
+			}
+			else {
+				parent->right = NULL;
+			}
+		}
+		else {  //parent가 NULL이면 root 노드라는 뜻이므로 헤드 노드에서 root 노드 연결 해제
+			head->left = NULL;
+		}
+
+		free(now);  //노드 메모리 반환
+		return 0;
+	}
+
+	/* 삭제할 노드가 1개의 자식 노드를 가졌을 때 */
+	if(now->left == NULL || now->right == NULL) {
+
+		Node* child;  //삭제할 노드의 부모 노드와 연결시킬 삭제할 노드의 자식 노드를 child에 저장
+		if(now->left != NULL) {  //왼쪽이나 오른쪽에 존재하는 자식 노드를 child에 저장
+			child = now->left;
+		}
+		else {
+			child = now->right;
+		}
+
+		if(parent != NULL) {
+			if(parent->left == now) {  //만약 삭제할 노드가 부모 노드의 왼쪽 자식이었으면
+				parent->left = child;  //저장한 child 노드를 부모 노드의 왼쪽 자식으로 연결
+			}
+			else {  //반대면 오른쪽으로 연결
+				parent->right = child;
+			}
+		}
+		else {  //부모 노드가 NULL이면 root 노드이므로 child 노드를 root 노드로 설정
+			root = child;
+		}
+
+		free(now);  //노드 메모리 반환
+		return 0;
+	}
+
+	/* 삭제할 노드가 2개의 자식 노드를 가졌을 때 */
+	if(now->left != NULL && now->right != NULL) {
+
+		Node* child = now->right;  //현재 노드의 오른쪽 자식 노드
+		parent = now;  //부모 노드를 현재 노드로
+
+		while(child->left != NULL) {  //자식 노드의 왼쪽 자식 노드가 NULL이 되기 전까지
+			parent = child;  //부모 노드 위치를 옮기고 왼쪽 자식 노드로 트리 이동
+			child = child->left;
+		}
+
+		if(parent->right == child) {  //부모 노드의 오른쪽 자식 노드가 child가 되면
+			parent->right = child->right;  //부모 노드의 오른쪽 노드를 child의 오른쪽 자식 노드로
+		}
+		else {  //반대의 경우 왼쪽 노드를 child의 오른쪽 자식 노드로
+			parent->left = child->right;
+		}
+
+		now->key = child->key;  //now의 key를 child의 key로 바꾼 후
+
+		free(child);  //child 메모리 반환
+		return 0;
+	}
 }
 
 
