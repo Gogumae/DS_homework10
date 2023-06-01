@@ -104,10 +104,6 @@ int main()
 			levelOrder(head->left);
 			break;
 
-		case 'p': case 'P':
-			printStack();
-			break;
-
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
 			break;
